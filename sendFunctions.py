@@ -39,7 +39,6 @@ def recvThread():
 		(header, packet) = cap.next()
 		if authenticated():
 			packetHandler(packet)
-		else
 
 def packetHandler(packet):
 	print packet
