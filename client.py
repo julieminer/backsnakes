@@ -14,7 +14,6 @@ server = ""
 protocol = ""
 interface = ""
 
-
 def main(argv):
 	checkArgs(argv)
 	spyFunctions.disguise()
@@ -26,7 +25,6 @@ def main(argv):
 	except (KeyboardInterrupt, SystemExit):
 		running = False
 		sys.exit()
-
 
 def checkArgs(argv):
 	global server
@@ -51,7 +49,6 @@ def checkArgs(argv):
 			interface = arg
 
 	if (server == "" or protocol == "" or interface == ""):
-		# print server + " " + protocol + " " + interface
 		usage()
 		sys.exit(2)
 
