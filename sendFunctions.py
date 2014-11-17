@@ -7,9 +7,21 @@ import config
 import client
 import utils
 
-def startClient():
+server = ""
+protocol = ""
+interface = ""
+
+def startClient(serverIP, proto, intf):
 	# check if you can connect?
 	# start the recieving thread
+	global server
+	global protocol
+	global interface
+
+	server = serverIP
+	protocol = proto
+	interface = intf
+
 	listenThread = threading.Thread(target=recvThread)
 	listenThread.daemon = True
 	listenThread.start()
@@ -32,13 +44,20 @@ def recvThread():
 	# wait for the knock code
 	# once you get the knock code, send something back, then begin listening for stuff
 	# for now, just print data
-	cap = pcapy.open_live(config.dev, 65536, 1, 0)
+	cap = pcapy.open_live(interface, 65536, 1, 0)
 	cap.setfilter(config.protocol)
 
 	while(client.running):
 		(header, packet) = cap.next()
 		if authenticated():
 			packetHandler(packet)
+
+def authenticated():
+	# start a timer, or check if it's running
+		# if the timer expired, no auth
+	# if it fits the knock code, add one to a value
+	# if the value == to the total knock code, authenticate
+	return True
 
 def packetHandler(packet):
 	print packet

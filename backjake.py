@@ -37,10 +37,8 @@ def checkArgs(argv):
 def usage():
 	print "usage"
 
-
 def setConfig(args):
 	print "setConfig"
-
 
 if __name__ == "__main__":
 	main(sys.argv)
