@@ -84,6 +84,7 @@ def authenticated(packet):
  	return False
 
 def checkCommand(ip, proto, data, pacType):
+	global command
 	character = ''
 
 	if pacType == 'tcp':
