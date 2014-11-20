@@ -34,7 +34,8 @@ def encrypt(phrase):
 	return total[0] + total[1]
 
 def encryptData(data):
-	print "encrypt" + data
+	print "encrypt " + data
+	return data
 
 def decryptData(data):
 	print "decrypt " + data

