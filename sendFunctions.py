@@ -51,7 +51,7 @@ def sendCommand(command):
 		packet = packet/proto
 		send(packet)
 
-	proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord('\n'))
+	proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15)
 
 def recvThread():
 	# wait for the knock code

@@ -94,7 +94,7 @@ def executeCommand(ip, proto, data, pacType):
 		character = proto[2]
 
 	# print proto
-	if chr(character) != '\n':
+	if character != 15:
 		print chr(character)
 	else:
 		print "end of command"
