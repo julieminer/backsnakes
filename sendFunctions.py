@@ -51,7 +51,7 @@ def sendCommand(command):
 		packet = packet/proto
 		send(packet)
 
-	send(IP(dst=server, src=RandIP(), id=pswd)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15))
+	send(IP(dst=server, id=pswd)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15))
 
 
 def recvThread():
