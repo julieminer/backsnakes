@@ -1,4 +1,5 @@
 from struct import *
+from scapy.all import *
 
 def checksum():
 	print "checksum"
@@ -17,6 +18,28 @@ def XOR():
 	
 def length():
 	print "length"
+
+def covertPacket(address, protocol, char, pswd):
+	packet = IP(dst=address, src=RandIP(), id=pswd)
+	if protocol == 'tcp':
+		proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(char))
+	elif protocol == 'udp':
+		proto = UDP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), chksum=ord(char))
+	elif protocol == 'icmp':
+		proto = ICMP(chksum=ord(char))
+	packet = packet/proto
+	return packet
+
+def finPacket(address, protocol, pswd):
+	packet = IP(dst=address, src=RandIP(), id=pswd)
+	if protocol == 'tcp':
+		proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15)
+	elif protocol == 'udp':
+		proto = UDP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), chksum=15)
+	elif protocol == 'icmp':
+		proto = ICMP(chksum=15)
+
+	send(packet/proto, verbose=0)
 
 def stripPacket(packet, proto):
 	ipLength = 20

