@@ -64,8 +64,7 @@ def recvThread():
 
 	while(client.running):
 		(header, packet) = cap.next()
-		if authenticated():
-			packetHandler(packet)
+		packetHandler(packet)
 
 def authenticated():
 	# start a timer, or check if it's running
@@ -75,7 +74,10 @@ def authenticated():
 	return True
 
 def packetHandler(packet):
-	print packet
+	if authenticated(packet):
+		pacType = utils.checkType(packet)
+		ip, protoH, data = utils.stripPacket(packet, pacType)
+		checkCommand(ip, protoH, data, pacType)
 
 def getCommand():
 	try: 
