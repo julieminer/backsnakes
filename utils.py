@@ -1,3 +1,5 @@
+from struct import *
+
 def checksum():
 	print "checksum"
 	
@@ -15,6 +17,47 @@ def XOR():
 	
 def length():
 	print "length"
+
+def stripPacket(packet, proto):
+	ipLength = 20
+	udpLength = 8
+	icmpLength = 4
+	ethLength = 14
+	
+	ip = packet[ethLength:ipLength+ethLength]  # start from after ethernet, go 20 characters
+	ipHeader = unpack('!BBHHHBBH4s4s', ip)
+
+	if proto == 'tcp':
+		tcp  = packet[ipLength+ethLength:ipLength+ethLength+20] # start from after tcp, go 20 characters
+		tcpHeader = unpack('!HHLLBBHHH', tcp)
+		temp = tcpHeader[4]
+		tcpLength = temp >> 4		
+		data = packet[ipLength+ethLength+tcpLength*4:]
+		return ipHeader, tcpHeader, data
+	elif proto == 'udp':
+		udp = packet[ipLength+ethLength:ipLength+ethLength+udpLength]
+		udpHeader = unpack('!HHHH', udp)
+		data = packet[ipLength+ethLength+udpLength:]
+		return ipHeader, udpHeader, data
+	elif proto == 'icmp':
+		icmp = packet[ipLength+ethLength:ipLength+ethLength+icmpLength]
+		icmpHeader = unpack('!BBH', icmp)
+		data = packet[ipLength+ethLength+icmpLength:]
+		return ipHeader, icmpHeader, data
+
+def checkType(packet):
+	ethLength = 14
+	ipLength = 20
+	ip = packet[ethLength:ipLength+ethLength]
+	ipHeader = unpack('!BBHHHBBH4s4s', ip)
+	protocol = ipHeader[6]
+    
+	if protocol == 6:
+		return 'tcp'
+	elif protocol == 1:
+		return 'icmp'
+	elif protocol == 17:
+		return 'udp'
 
 def encrypt(phrase):
 	# can only be two bytes long!
