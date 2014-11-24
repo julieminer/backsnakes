@@ -51,7 +51,7 @@ def recvThread():
 	# once you get the knock code, send something back, then begin listening for stuff
 	# for now, just print data
 	cap = pcapy.open_live(interface, 65536, 1, 0)
-	fltr = protocol
+	fltr = protocol + " and ip src " + server
 	cap.setfilter(fltr)
 
 	while(client.running):
@@ -74,7 +74,6 @@ def packetHandler(packet):
 def checkResult(ip, proto, data, pacType):
 	character = ''
 
-	# print pacType
 	if pacType == 'tcp':
 		character = proto[2]
 	elif pacType == 'udp':
@@ -84,8 +83,7 @@ def checkResult(ip, proto, data, pacType):
 
 	# here is where I'll actually be printing the results
 	if character < 256:
-		if character != 15:
-			sys.stdout.write(chr(character)) 
+		sys.stdout.write(chr(character)) 
 
 def getCommand():
 	try: 
