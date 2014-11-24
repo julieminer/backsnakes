@@ -86,4 +86,5 @@ def encryptData(data):
 	return data
 
 def decryptData(data):
-	print "decrypt " + data
+	# print "decrypt " + chr(data)
+	return data

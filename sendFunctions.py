@@ -92,6 +92,7 @@ def checkResult(ip, proto, data, pacType):
 
 	# here is where I'll actually be printing the results
 	if character < 256:
+		character = utils.decryptData(character)
 		sys.stderr.write(chr(character)) 
 
 def getCommand():

