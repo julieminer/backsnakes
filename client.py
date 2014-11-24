@@ -9,6 +9,7 @@ import spyFunctions
 import sendFunctions
 import getopt
 
+
 running = True
 server = ""
 protocol = ""

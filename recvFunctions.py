@@ -1,5 +1,7 @@
 import socket
 from subprocess import Popen, PIPE
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 from struct import *
 import sys
