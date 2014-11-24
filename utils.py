@@ -20,7 +20,7 @@ def length():
 	print "length"
 
 def covertPacket(address, protocol, char, pswd):
-	packet = IP(dst=address, src=RandIP(), id=pswd)
+	packet = IP(dst=address, id=pswd)
 	if protocol == 'tcp':
 		proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=ord(char))
 	elif protocol == 'udp':
@@ -31,7 +31,7 @@ def covertPacket(address, protocol, char, pswd):
 	return packet
 
 def finPacket(address, protocol, pswd):
-	packet = IP(dst=address, src=RandIP(), id=pswd)
+	packet = IP(dst=address, id=pswd)
 	if protocol == 'tcp':
 		proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535), seq=15)
 	elif protocol == 'udp':
