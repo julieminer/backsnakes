@@ -23,7 +23,7 @@ def getDisguise():
 	return top5[random.randint(0,4)]
 	
 def setDisguise(disguise):
-	# setproctitle.setproctitle(disguise)
+	setproctitle.setproctitle(disguise)
 	print "Cloaked as: " + disguise
 
 	

