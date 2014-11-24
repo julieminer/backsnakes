@@ -30,13 +30,11 @@ class EventHandler(pyinotify.ProcessEvent):
 
 		if isFile:
 			sendFile(event.pathname)
-		# send this to client
 
 	def process_IN_DELETE(self, event):
 		global string
 		sendMessage(string)
 		string = "Deleted: " + event.pathname
-		# send this to client
 
 mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE
 handler = EventHandler()

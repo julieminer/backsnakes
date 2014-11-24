@@ -14,7 +14,6 @@ protocol = ""
 interface = ""
 
 def startClient(serverIP, proto, intf):
-	# check if you can connect?
 	global server
 	global protocol
 	global interface
@@ -30,7 +29,6 @@ def startClient(serverIP, proto, intf):
 	sendCommand(utils.encryptData("?connect"))
 	print ""
 
-	# wait for commands
 	while(client.running):
 		comm = getCommand()
 		if comm != "":
@@ -40,7 +38,6 @@ def startClient(serverIP, proto, intf):
 			sys.exit()
 
 def sendCommand(command):
-	# send your command, make sure you set the password in the ip id field (ipHeader[3])
 	pswd = utils.encrypt(config.password)
 
 	for c in command:
