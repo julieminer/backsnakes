@@ -28,6 +28,7 @@ def startClient(serverIP, proto, intf):
 	listenThread.start()
 
 	sendCommand(utils.encryptData("?connect"))
+	print ""
 
 	# wait for commands
 	while(client.running):
@@ -89,7 +90,7 @@ def checkResult(ip, proto, data, pacType):
 
 	if character < 256:
 		character = utils.decryptData(character)
-		if ord(character) > 31 and ord(character) < 127 or character == '\n':
+		if (ord(character) > 31 and ord(character) < 127) or ord(character) == 13 or ord(character) == 10:
 			sys.stderr.write(character) 
 
 def getCommand():

