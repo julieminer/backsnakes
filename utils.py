@@ -1,5 +1,6 @@
 from struct import *
 from scapy.all import *
+import config
 
 def covertPacket(address, protocol, char, pswd):
 	packet = IP(dst=address, id=pswd)
@@ -82,9 +83,15 @@ def encrypt(phrase):
 	return total[0] + total[1]
 
 def encryptData(data):
-	print "encrypt " + data
-	return data
+	string = ""
+	for c in data:
+		string = chr((ord(c) ^ config.knock[0]) % 256)
+
+	return string
 
 def decryptData(data):
-	# print "decrypt " + chr(data)
-	return data
+	string = ""
+	for c in data:
+		string += chr((ord(c) ^ config.knock[0]) % 256)
+
+	return string
