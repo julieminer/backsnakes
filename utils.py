@@ -1,24 +1,6 @@
 from struct import *
 from scapy.all import *
 
-def checksum():
-	print "checksum"
-	
-def resolveHost():
-	print "resolveHost"
-	
-def GetIPAddress():
-	print "GetIPAddress"
-	
-def usage():
-	print "usage"
-	
-def XOR():
-	print "XOR"
-	
-def length():
-	print "length"
-
 def covertPacket(address, protocol, char, pswd):
 	packet = IP(dst=address, id=pswd)
 	if protocol == 'tcp':
