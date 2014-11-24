@@ -1,0 +1,73 @@
+WARNING: No route found for IPv6 destination :: (no default route?)
+WARNING: No route found for IPv6 destination :: (no default route?)
+/bin/sh: /root/final/backsnakes: Is a directory
+/bin/sh: backjake.py: command not found
+/bin/sh: line 1: backjake.pyc: command not found
+/bin/sh: line 2: backsnakes: command not found
+/bin/sh: line 3: client.py: command not found
+/bin/sh: line 4: client.pyc: command not found
+/bin/sh: line 5: config.py: command not found
+/bin/sh: line 6: config.pyc: command not found
+/bin/sh: line 7: exfil.py: command not found
+/bin/sh: line 8: exfil.pyc: command not found
+/bin/sh: line 9: nohup.out: command not found
+/bin/sh: line 10: README.md: command not found
+/bin/sh: line 11: recvFunctions.py: command not found
+/bin/sh: line 12: recvFunctions.pyc: command not found
+/bin/sh: line 13: sendFunctions.py: command not found
+/bin/sh: line 14: sendFunctions.pyc: command not found
+/bin/sh: line 15: setup.py: command not found
+/bin/sh: line 16: spyFunctions.py: command not found
+/bin/sh: line 17: spyFunctions.pyc: command not found
+/bin/sh: line 18: utils.py: command not found
+/bin/sh: line 19: utils.pyc: command not found
+/bin/sh: /root/final/backsnakes: Is a directory
+[2014-11-24 00:33:41,843 pyinotify ERROR] add_watch: cannot watch e.py
+backjake.pyc
+client.py
+client.pyc
+config.py
+config.pyc
+exfil.py
+exfil.pyc
+nohup.out
+README.md
+recvFunctions.py
+recvFunctions.pyc
+sendFunctions.py
+sendFunctions.pyc
+setup.py
+spyFunctions.py
+spyFunctions.pyc
+utils.py
+utils.pyc
+?intfA /tmp WD=-1, Errno=No such file or directory (ENOENT)
+/bin/sh: Created: command not found
+/bin/sh: line 1: hell: command not found
+/bin/sh: line 2: ?quit: command not found
+Cloaked as: /opt/VBoxGuestAdditions-4.3.12/bin/VBoxClient
+added: e.py
+backjake.pyc
+client.py
+client.pyc
+config.py
+config.pyc
+exfil.py
+exfil.pyc
+nohup.out
+README.md
+recvFunctions.py
+recvFunctions.pyc
+sendFunctions.py
+sendFunctions.pyc
+setup.py
+spyFunctions.py
+spyFunctions.pyc
+utils.py
+utils.pyc
+?intfA /tmp
+added: /tmp
+Traceback (most recent call last):
+  File "/root/final/backsnakes/backsnakes/backjake.py", line 30, in <module>
+  File "/root/final/backsnakes/backsnakes/backjake.py", line 25, in main
+TypeError: 'int' object is not callable
