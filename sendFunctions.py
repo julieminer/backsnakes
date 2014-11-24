@@ -8,6 +8,7 @@ import config
 import client
 import utils
 
+knockVal = 0
 server = ""
 protocol = ""
 interface = ""
@@ -47,9 +48,6 @@ def sendCommand(command):
 
 
 def recvThread():
-	# wait for the knock code
-	# once you get the knock code, send something back, then begin listening for stuff
-	# for now, just print data
 	cap = pcapy.open_live(interface, 65536, 1, 0)
 	fltr = protocol + " and ip src " + server
 	cap.setfilter(fltr)
@@ -59,16 +57,27 @@ def recvThread():
 		packetHandler(packet)
 
 def authenticated(packet):
+	global knockVal
 	# start a timer, or check if it's running
 		# if the timer expired, no auth
 	# if it fits the knock code, add one to a value
 	# if the value == to the total knock code, authenticate
-	return True
+	if knockVal < len(config.knock):
+		if packet[3] == config.knock[knockVal]:
+			knockVal += 1
+			if knockVal == len(config.knock):
+				return True
+		else:
+			knockVal = 0
+			return False
+	else:
+		return True
 
 def packetHandler(packet):
-	if authenticated(packet):
-		pacType = utils.checkType(packet)
-		ip, protoH, data = utils.stripPacket(packet, pacType)
+	pacType = utils.checkType(packet)
+	ip, protoH, data = utils.stripPacket(packet, pacType)
+	
+	if authenticated(ip):
 		checkResult(ip, protoH, data, pacType)
 
 def checkResult(ip, proto, data, pacType):
