@@ -83,7 +83,7 @@ def checkResult(ip, proto, data, pacType):
 
 	# here is where I'll actually be printing the results
 	if character < 256:
-		sys.stdout.write(chr(character)) 
+		sys.stderr.write(chr(character)) 
 
 def getCommand():
 	try: 
