@@ -15,7 +15,8 @@ pswd = utils.encrypt(config.password)
 
 def recieveDatagram():
 	cap = pcapy.open_live(config.dev, 65536, 1, 0)
-	cap.setfilter('tcp or udp or icmp')
+	fltr = "(tcp or udp or icmp) and not (ip src " + str(socket.gethostbyname(socket.gethostname()) + ")")
+	cap.setfilter(fltr)
 
 	while(backjake.running):
 		(header, packet) = cap.next()
