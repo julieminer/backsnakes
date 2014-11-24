@@ -84,14 +84,22 @@ def encrypt(phrase):
 
 def encryptData(data):
 	string = ""
+
+	print "encrypting " + data
 	for c in data:
-		string = chr((ord(c) ^ config.knock[0]) % 256)
+		string += chr((ord(c) ^ config.knock[0]) % 256)
 
 	return string
 
 def decryptData(data):
+	print "decrypting " + str(data)
 	string = ""
-	for c in data:
-		string += chr((ord(c) ^ config.knock[0]) % 256)
 
+	if type(data) is str:
+		for c in data:
+			string += chr((ord(c) ^ config.knock[0]) % 256)
+	else:	
+		string += chr((data ^ config.knock[0]) % 256)
+	
+	print string
 	return string
