@@ -1,3 +1,23 @@
+"""
+/*---------------------------------------------------------------------------------------
+--  SOURCE FILE:    client.py
+--
+--  PROGRAM:        client
+--
+--  FUNCTIONS:      main(argv)
+--                  checkArgs(argv)
+--					usage()
+--
+--  DATE:           December 7th, 2014
+--
+--  DESIGNERS:      Jacob Miner
+--
+--  PROGRAMMERS:    Jacob Miner
+--
+--  NOTES:			This is the client application that connects to and sends commands to
+--  				the remote server
+---------------------------------------------------------------------------------------*/
+"""
 import socket
 from struct import *
 import pcapy
@@ -9,12 +29,31 @@ import spyFunctions
 import sendFunctions
 import getopt
 
-
 running = True
 server = ""
 protocol = ""
 interface = ""
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   main()
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	main(argv)
+--					argv - the arguments to the program
+--
+--  RETURNS:  void
+--
+--  NOTES:  The main thread of the program. Starts the rest of the progress
+--  
+------------------------------------------------------------------------------*/
+"""
 def main(argv):
 	global running 
 	
@@ -29,6 +68,26 @@ def main(argv):
 		running = False
 		sys.exit()
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   checkArgs()
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	checkArgs(argv)
+--					argv - the arguments to the program
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	Checks the arguments for the program and sets the parameters
+--  
+------------------------------------------------------------------------------*/
+"""
 def checkArgs(argv):
 	global server
 	global protocol
@@ -55,6 +114,25 @@ def checkArgs(argv):
 		usage()
 		sys.exit(2)
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   usage()
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	usage()
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	Prints the usage of the program
+--  
+------------------------------------------------------------------------------*/
+"""
 def usage():
 	print "usage: python client.py -s <serverIP> -p <protocol> -i <interface>"
 	print "		-s Server IP Address"

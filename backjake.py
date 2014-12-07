@@ -1,3 +1,22 @@
+"""
+/*---------------------------------------------------------------------------------------
+--  SOURCE FILE:    backjake.py
+--
+--  PROGRAM:        backjake
+--
+--  FUNCTIONS:      main(argv)
+--
+--  DATE:           December 7th, 2014
+--
+--  DESIGNERS:      Jacob Miner
+--
+--  PROGRAMMERS:    Jacob Miner
+--
+--  NOTES:			The server side of the program. Recieves command and performs exfiltration
+--  
+---------------------------------------------------------------------------------------*/
+"""
+
 import socket
 from struct import *
 import pcapy
@@ -15,6 +34,26 @@ import exfil
 
 running = True
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   main()
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	main(argv)
+--					argv - the arguments of the program. Not used.
+--
+--  RETURNS:  	void	
+--
+--  NOTES:  	Starts the other threads in the server program.
+--  
+------------------------------------------------------------------------------*/
+"""
 def main(argv):
 	spyFunctions.disguise()
 	recvFunctions.startServer()

